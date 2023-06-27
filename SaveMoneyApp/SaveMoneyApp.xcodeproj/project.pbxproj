@@ -20,6 +20,7 @@
 		60295DBE2A4A29F7001D7032 /* SaveMoneyAppTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60295DBD2A4A29F7001D7032 /* SaveMoneyAppTests.swift */; };
 		60295DC42A4A2A21001D7032 /* ViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60295DAC2A49E014001D7032 /* ViewModel.swift */; };
 		60295DC52A4A2A2C001D7032 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60295DA22A49DD5E001D7032 /* Models.swift */; };
+		60295DC72A4AF98F001D7032 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60295DAF2A49E1A2001D7032 /* Constants.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -299,6 +300,7 @@
 				60295DC52A4A2A2C001D7032 /* Models.swift in Sources */,
 				60295DC42A4A2A21001D7032 /* ViewModel.swift in Sources */,
 				60295DBE2A4A29F7001D7032 /* SaveMoneyAppTests.swift in Sources */,
+				60295DC72A4AF98F001D7032 /* Constants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

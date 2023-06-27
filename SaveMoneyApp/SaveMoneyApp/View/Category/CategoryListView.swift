@@ -13,30 +13,35 @@ struct CategoryListView: View {
     @State private var isSheetShowing = false
     
     var body: some View {
-        VStack {
-            List {
-                ForEach(viewModel.categories) { category in
-                    Text(category.name)
+        NavigationView {
+            VStack {
+                List {
+                    ForEach(viewModel.categories) { category in
+                        Text(category.name)
+                    }
+                    .onDelete(perform: viewModel.removeCategory)
                 }
-                .onDelete(perform: viewModel.removeCategory)
             }
-        }
-        .sheet(isPresented: $isSheetShowing) {
-            AddCategoryView()
-                .presentationDetents([.height(300)])
-        }
-        .navigationTitle("Category")
-        .toolbar {
-            ToolbarItem() {
-                Button {
-                    isSheetShowing.toggle()
-                } label: {
-                    Image(systemName: "plus")
-                    Text("Add")
-                }
-
+            .sheet(isPresented: $isSheetShowing) {
+                AddCategoryView()
+                    .presentationDetents([.height(300)])
             }
             
+            .navigationTitle("Category")
+            .toolbar {
+                ToolbarItem() {
+                    Button {
+                        isSheetShowing.toggle()
+                    } label: {
+                        Image(systemName: "plus")
+                        Text("Add")
+                    }
+                }
+                
+                ToolbarItem(placement: .cancellationAction) {
+                    EditButton()
+                }
+            }
         }
     }
 }

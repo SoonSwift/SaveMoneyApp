@@ -11,6 +11,7 @@ struct AddCategoryView: View {
     
     @State private var name = ""
     @Environment (\.dismiss) var dismiss
+    @EnvironmentObject var viewModel: ViewModel
     
     var body: some View {
         NavigationView {
@@ -32,7 +33,11 @@ struct AddCategoryView: View {
             .toolbar {
                 ToolbarItem {
                     Button("Add") {
-                        
+                        // Add and Save categories to file
+                        let newCategory = ExpenseCategory(name: name, id: UUID())
+                        viewModel.categories.append(newCategory)
+                        viewModel.saveCategoryToFile()
+                        dismiss()
                     }
                 }
                 

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Expense: Identifiable {
+struct Expense: Identifiable, Codable, Equatable {
     let id: UUID
     let title: String
     let amount: Double
@@ -15,7 +15,7 @@ struct Expense: Identifiable {
     let date: Date
 }
 
-struct ExpenseCategory: Identifiable {
+struct ExpenseCategory: Identifiable, Codable, Equatable {
     let name: String
     let id: UUID
 }

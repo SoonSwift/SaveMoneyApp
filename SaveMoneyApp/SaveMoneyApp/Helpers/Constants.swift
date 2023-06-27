@@ -9,4 +9,6 @@ import Foundation
 
 struct Constans {
     static let categegories = [ExpenseCategory(name: "cos", id: UUID()), ExpenseCategory(name: "karma", id: UUID()), ExpenseCategory(name: "Dziewczyna", id: UUID())]
+    static let categoryFileName = "categories.json"
 }
+
