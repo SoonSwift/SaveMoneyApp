@@ -24,6 +24,24 @@ struct MainView: View {
                         }
                     }
                     .tag(0)
+                
+                ExpenseView()
+                    .tabItem {
+                        VStack {
+                            Image(systemName: "plus.forwardslash.minus")
+                            Text("Category")
+                        }
+                    }
+                    .tag(1)
+                
+                PlotView()
+                    .tabItem {
+                        VStack {
+                            Image(systemName: "plus.forwardslash.minus")
+                            Text("Category")
+                        }
+                    }
+                    .tag(2)
             }
         }
     }
