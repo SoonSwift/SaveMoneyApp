@@ -10,7 +10,6 @@ import SwiftUICharts
 
 struct PlotView: View {
     
-    var demoData: [Double] = [8,2,4,6,12,9,2]
     @EnvironmentObject var viewModel: ViewModel
     
     var body: some View {
@@ -21,21 +20,28 @@ struct PlotView: View {
                         .tag(mode as ExpenseTrackingMode)
                 }
             }
-            LineChartView(data: viewModel.getAllExpenseAmounts(viewModel.getTrackedExpenses()), title: "Tracker")
+            if viewModel.getAllExpenseAmounts(viewModel.getTrackedExpenses()).isEmpty {
+                
+            } else {
+                LineChartView(data: viewModel.getAllExpenseAmounts(viewModel.getTrackedExpenses()), title: "Tracker")
+                
+            }
 
+            BarChartView(data: ChartData(points: viewModel.userPick()), title: "Expanses")
         }
     }
+    
 }
 
 struct PlotView_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = ViewModel()
-        viewModel.expenses = Constans.expenses
+        viewModel.expenses = [Expense(id: UUID(), title: "hm", amount: 122.2, category: ExpenseCategory(name: "karma", id: UUID()), date: viewModel.addOrSubtractMonth(month: -1)), Expense(id: UUID(), title: "food", amount: 12.2, category: ExpenseCategory(name: "karma", id: UUID()), date: Date.now)]
         viewModel.categories = Constans.categegories
         return NavigationView {
             PlotView()
                 .environmentObject(viewModel)
-
         }
     }
+ 
 }

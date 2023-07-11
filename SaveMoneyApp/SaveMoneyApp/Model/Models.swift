@@ -19,3 +19,10 @@ struct ExpenseCategory: Identifiable, Codable, Equatable, Hashable {
     let name: String
     let id: UUID
 }
+
+enum ExpenseTrackingMode: String, CaseIterable, Identifiable {
+    case daily = "Daily"
+    case monthly = "Monthly"
+    case all = "All"
+    var id: String { self.rawValue }
+}

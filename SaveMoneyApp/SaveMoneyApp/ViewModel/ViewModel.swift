@@ -7,14 +7,6 @@
 
 import Foundation
 
-enum ExpenseTrackingMode: String, CaseIterable, Identifiable {
-    case daily = "Daily"
-    case monthly = "Monthly"
-    case all = "All"
-    
-    var id: String { self.rawValue }
-}
-
 class ViewModel: ObservableObject {
     
     @Published var expenses: [Expense] = []
@@ -41,6 +33,7 @@ class ViewModel: ObservableObject {
     }
     
     func saveCategoryToFile() {
+        
         let encoder = JSONEncoder()
         
         do {
@@ -54,6 +47,7 @@ class ViewModel: ObservableObject {
     }
     
     func loadCategoryFromFile() {
+        
         let fileManager = FileManager.default
         let fileUrl = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(Constans.categoryFileName)
         
@@ -68,6 +62,7 @@ class ViewModel: ObservableObject {
     }
     
     func saveExpenseToFile() {
+        
         let encoder = JSONEncoder()
         
         do {
@@ -81,6 +76,7 @@ class ViewModel: ObservableObject {
     }
     
     func loadExpenseFromFile() {
+        
         let fileManager = FileManager.default
         let fileUrl = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(Constans.expenseFileName)
         
@@ -128,4 +124,51 @@ class ViewModel: ObservableObject {
         return filteredExpenses
     }
     
+    func getExpensesSumByDay() -> [Double] {
+        let dailyExpenses = getTrackedExpenses()
+        var expensesSumByDay: [Double] = Array(repeating: 0.0, count: 31) // Assuming max 31 days in a month
+        
+        for expense in dailyExpenses {
+            let calendar = Calendar.current
+            let expenseDay = calendar.component(.day, from: expense.date)
+            expensesSumByDay[expenseDay - 1] += expense.amount
+        }
+        
+        return expensesSumByDay
+    }
+    
+    func getExpensesSumByMonth() -> [Double] {
+        let monthlyExpenses = getTrackedExpenses()
+        var expensesSumByMonth: [Double] = Array(repeating: 0.0, count: 12) // Assuming 12 months in a year
+        
+        for expense in monthlyExpenses {
+            let calendar = Calendar.current
+            let expenseMonth = calendar.component(.month, from: expense.date)
+            expensesSumByMonth[expenseMonth - 1] += expense.amount
+        }
+        
+        return expensesSumByMonth
+    }
+
+    func getTotalExpensesSum() -> [Double] {
+        let allExpenses = getTrackedExpenses()
+        let totalSum = allExpenses.reduce(0.0) { $0 + $1.amount }
+        return [totalSum]
+    }
+    
+    func userPick() -> [Double] {
+        switch trackingMode {
+        case .daily:
+            return getExpensesSumByDay()
+        case .monthly:
+            return getExpensesSumByMonth()
+        case .all:
+            return getTotalExpensesSum()
+        }
+    }
+    
+    func addOrSubtractMonth(month: Int) -> Date {
+        Calendar.current.date(byAdding: .month, value: month, to: Date())!
+    }
+
 }
