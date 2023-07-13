@@ -7,10 +7,27 @@
 
 import SwiftUI
 
+enum Theme {
+    static let primary = Color("Primary")
+}
+
 struct MainView: View {
     
     
     @State private var selection = 0
+    @AppStorage("systemThemeVal") private var systemTheme:Int = SchameType.allCases.first!.rawValue
+
+    private var selectedSchame: ColorScheme? {
+        guard let theme = SchameType(rawValue: systemTheme) else { return nil }
+        switch theme {
+        case .light:
+            return .light
+        case .dark:
+            return .dark
+        case .system:
+            return nil
+        }
+    }
     
     var body: some View {
         NavigationStack {
@@ -42,8 +59,19 @@ struct MainView: View {
                         }
                     }
                     .tag(2)
+                
+                SettingsView()
+                    .tabItem {
+                        VStack {
+                            Image(systemName: "gear")
+                            Text("Settings")
+                        }
+                    }
+                    .tag(3)
             }
+           
         }
+        .preferredColorScheme(selectedSchame)
     }
 }
 

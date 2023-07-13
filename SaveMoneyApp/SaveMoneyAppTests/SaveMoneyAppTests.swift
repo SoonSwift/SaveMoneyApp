@@ -220,4 +220,94 @@ final class CategoryTests: XCTestCase {
         XCTAssertEqual(array.count, 2)
     }
     
+    func testGetExpensesSumByDay() {
+        // Given
+        let viewModel = ViewModel()
+        viewModel.trackingMode = .daily
+        let currentDate = Date()
+        
+        var dateComponents = DateComponents()
+        dateComponents.hour = -25
+        
+        let calendar = Calendar.current
+        if let date25HoursAgo = calendar.date(byAdding: dateComponents, to: currentDate) {
+            // Create the expense with the date set to 25 hours ago
+            let expense1 = Expense(id: UUID(), title: "Expense 1", amount: 10.5, category: ExpenseCategory(name: "da", id: UUID()), date: date25HoursAgo)
+            let expense2 = Expense(id: UUID(), title: "Expense 2", amount: 20.0, category: ExpenseCategory(name: "sleep", id: UUID()), date: Date())
+            let expense3 = Expense(id: UUID(), title: "Expense 3", amount: 30.0, category: ExpenseCategory(name: "It's ok", id: UUID()), date: Date())
+            viewModel.expenses = [expense1, expense2, expense3]
+            print("Expense 1 Date: \(expense1.date)")
+        } else {
+            print("Failed to calculate the date 25 hours ago")
+        }
+        
+        // When
+        let sum = viewModel.getExpensesSumByDay()
+        
+        // Then
+        XCTAssert(sum[0] == 50.0)
+        // Sum shuld be always equal to 1 
+        XCTAssertEqual(sum.count, 1)
+    }
+    
+    func testGetTotalExpensesSum() {
+        // Given
+        let viewModel = ViewModel()
+        viewModel.trackingMode = .all
+        
+        var dateComponents = DateComponents()
+        dateComponents.hour = -25
+        let currentDate = Date()
+        
+        let calendar = Calendar.current
+        if let date25HoursAgo = calendar.date(byAdding: dateComponents, to: currentDate) {
+            // Create the expense with the date set to 25 hours ago
+            let expense1 = Expense(id: UUID(), title: "Expense 1", amount: 10.5, category: ExpenseCategory(name: "da", id: UUID()), date: date25HoursAgo)
+            let expense2 = Expense(id: UUID(), title: "Expense 2", amount: 20.0, category: ExpenseCategory(name: "sleep", id: UUID()), date: Date())
+            let expense3 = Expense(id: UUID(), title: "Expense 3", amount: 30.0, category: ExpenseCategory(name: "It's ok", id: UUID()), date: Date())
+            viewModel.expenses = [expense1, expense2, expense3]
+            print("Expense 1 Date: \(expense1.date)")
+        } else {
+            print("Failed to calculate the date 25 hours ago")
+        }
+        
+        // When
+        let sumOfAll = viewModel.getTotalExpensesSum()
+        
+        // Then
+        XCTAssertEqual(sumOfAll.count, 1)
+        XCTAssert(sumOfAll[0] == 60.5)
+    }
+    
+    func testGetExpenseSumByCategory() {
+        // Given
+        let viewModel = ViewModel()
+        viewModel.trackingMode = .daily
+        
+        var dateComponents = DateComponents()
+        dateComponents.hour = -25
+        let currentDate = Date()
+        
+        let calendar = Calendar.current
+        if let date25HoursAgo = calendar.date(byAdding: dateComponents, to: currentDate) {
+            // Create the expense with the date set to 25 hours ago
+            let expense1 = Expense(id: UUID(), title: "Expense 1", amount: 10.5, category: ExpenseCategory(name: "da", id: UUID()), date: date25HoursAgo)
+            let expense2 = Expense(id: UUID(), title: "Expense 2", amount: 20.0, category: ExpenseCategory(name: "sleep", id: UUID()), date: Date())
+            let expense3 = Expense(id: UUID(), title: "Expense 3", amount: 30.0, category: ExpenseCategory(name: "It's ok", id: UUID()), date: Date())
+            viewModel.expenses = [expense1, expense2, expense3]
+            print("Expense 1 Date: \(expense1.date)")
+        } else {
+            print("Failed to calculate the date 25 hours ago")
+        }
+        
+        // When
+        let sumByCategory = viewModel.getExpenseSumByCategory()
+        
+        // Then
+        XCTAssert(sumByCategory.count == 2)
+        // Sort the dictionary by category name
+        XCTAssertEqual(sumByCategory[0].0, "It's ok")
+        XCTAssertEqual(sumByCategory[1].0, "sleep")
+    }
+    
 }

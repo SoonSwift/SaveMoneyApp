@@ -126,28 +126,36 @@ class ViewModel: ObservableObject {
     
     func getExpensesSumByDay() -> [Double] {
         let dailyExpenses = getTrackedExpenses()
-        var expensesSumByDay: [Double] = Array(repeating: 0.0, count: 31) // Assuming max 31 days in a month
+        let calendar = Calendar.current
+        let currentDate = Date()
+        
+        var expensesSumToday: Double = 0.0
         
         for expense in dailyExpenses {
-            let calendar = Calendar.current
-            let expenseDay = calendar.component(.day, from: expense.date)
-            expensesSumByDay[expenseDay - 1] += expense.amount
+            if calendar.isDate(expense.date, inSameDayAs: currentDate) {
+                expensesSumToday += expense.amount
+            }
         }
         
-        return expensesSumByDay
+        return [expensesSumToday]
     }
     
     func getExpensesSumByMonth() -> [Double] {
         let monthlyExpenses = getTrackedExpenses()
-        var expensesSumByMonth: [Double] = Array(repeating: 0.0, count: 12) // Assuming 12 months in a year
+        let calendar = Calendar.current
+        let currentDate = Date()
+        let currentMonth = calendar.component(.month, from: currentDate)
+        
+        var expensesSumByMonth: Double = 0.0
         
         for expense in monthlyExpenses {
-            let calendar = Calendar.current
             let expenseMonth = calendar.component(.month, from: expense.date)
-            expensesSumByMonth[expenseMonth - 1] += expense.amount
+            if expenseMonth == currentMonth {
+                expensesSumByMonth += expense.amount
+            }
         }
         
-        return expensesSumByMonth
+        return [expensesSumByMonth]
     }
 
     func getTotalExpensesSum() -> [Double] {
@@ -169,6 +177,24 @@ class ViewModel: ObservableObject {
     
     func addOrSubtractMonth(month: Int) -> Date {
         Calendar.current.date(byAdding: .month, value: month, to: Date())!
+    }
+    
+    func getExpenseSumByCategory() -> [(String, Double)] {
+        let trackedExpenses = getTrackedExpenses()
+        var sumByCategory: [String: Double] = [:]
+        
+        for expense in trackedExpenses {
+            let category = expense.category.name
+            if let sum = sumByCategory[category] {
+                sumByCategory[category] = sum + expense.amount
+            } else {
+                sumByCategory[category] = expense.amount
+            }
+        }
+        // Sort the dictionary by category name and extract the values as an array of tuples
+        let sortedSumByCategory = sumByCategory.sorted { $0.key < $1.key }
+        let sums = sortedSumByCategory.map { ($0.key, $0.value) }
+        return sums
     }
 
 }

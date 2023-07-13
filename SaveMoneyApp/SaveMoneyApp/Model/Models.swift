@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 struct Expense: Identifiable, Codable, Equatable {
     let id: UUID

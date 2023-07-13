@@ -26,8 +26,11 @@ struct PlotView: View {
                 LineChartView(data: viewModel.getAllExpenseAmounts(viewModel.getTrackedExpenses()), title: "Tracker")
                 
             }
-
-            BarChartView(data: ChartData(points: viewModel.userPick()), title: "Expanses")
+            HStack {
+                BarChartView(data: ChartData(points: viewModel.userPick()), title: "Expanses")
+                
+                BarChartView(data: ChartData(values: viewModel.getExpenseSumByCategory()), title: "Categories")
+            }
         }
     }
     
