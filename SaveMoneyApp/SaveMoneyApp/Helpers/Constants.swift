@@ -13,4 +13,3 @@ struct Constans {
     static let expenses = [Expense(id: UUID(), title: "hm", amount: 122.2, category: ExpenseCategory(name: "karma", id: UUID()), date: Date.now), Expense(id: UUID(), title: "food", amount: 12.2, category: ExpenseCategory(name: "karma", id: UUID()), date: Date.now)]
     static let expenseFileName = "expenses.json"
 }
-

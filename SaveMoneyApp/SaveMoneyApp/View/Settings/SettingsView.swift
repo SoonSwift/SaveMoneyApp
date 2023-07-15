@@ -34,7 +34,6 @@ struct SettingsView: View {
     private var email = SupportEmail(toAddress: "mar.dytko@gmail.com", subject: "Support Email", messageHeader: "Please describe your problem below")
     private let link = URL(string: "https://www.apple.com")!
 
- 
     var body: some View {
         
         NavigationView {

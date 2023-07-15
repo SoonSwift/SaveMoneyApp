@@ -14,6 +14,7 @@ struct Expense: Identifiable, Codable, Equatable {
     let amount: Double
     var category: ExpenseCategory
     let date: Date
+    var isNecessary: Bool = false
 }
 
 struct ExpenseCategory: Identifiable, Codable, Equatable, Hashable {

@@ -13,27 +13,36 @@ struct PlotView: View {
     @EnvironmentObject var viewModel: ViewModel
     
     var body: some View {
-        VStack {
-            Picker("Expanse tracker", selection: $viewModel.trackingMode) {
-                ForEach(viewModel.trackingModes) { mode in
-                    Text(mode.rawValue)
-                        .tag(mode as ExpenseTrackingMode)
+        NavigationView {
+            VStack {
+                Picker("Expanse tracker", selection: $viewModel.trackingMode) {
+                    ForEach(viewModel.trackingModes) { mode in
+                        Text(mode.rawValue)
+                            .tag(mode as ExpenseTrackingMode)
+                    }
                 }
+                .pickerStyle(.segmented)
+                .padding(.top, 20)
+                Spacer()
+                if viewModel.getAllExpenseAmounts(viewModel.getTrackedExpenses()).isEmpty {
+                    Text("We dont have information to show please add expense")
+                } else {
+                    HStack {
+                        LineChartView(data: viewModel.getAllExpenseAmounts(viewModel.getTrackedExpenses()), title: "Tracker")
+                        BarChartView(data: ChartData(values: [("Necessary", viewModel.getTotalNecessaryExpenses()), ("Not necessary", viewModel.getTotalNonNecessaryExpenses())]), title: "Necessary Expense")
+                        
+                    }
+                    HStack {
+                        BarChartView(data: ChartData(points: viewModel.userPick()), title: "Expanses")
+                        
+                        BarChartView(data: ChartData(values: viewModel.getExpenseSumByCategory()), title: "Categories")
+                    }
+                }
+                Spacer()
             }
-            if viewModel.getAllExpenseAmounts(viewModel.getTrackedExpenses()).isEmpty {
-                
-            } else {
-                LineChartView(data: viewModel.getAllExpenseAmounts(viewModel.getTrackedExpenses()), title: "Tracker")
-                
-            }
-            HStack {
-                BarChartView(data: ChartData(points: viewModel.userPick()), title: "Expanses")
-                
-                BarChartView(data: ChartData(values: viewModel.getExpenseSumByCategory()), title: "Categories")
-            }
+            .navigationTitle("Plots")
         }
     }
-    
 }
 
 struct PlotView_Previews: PreviewProvider {

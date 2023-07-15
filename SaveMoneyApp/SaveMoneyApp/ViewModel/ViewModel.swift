@@ -196,5 +196,19 @@ class ViewModel: ObservableObject {
         let sums = sortedSumByCategory.map { ($0.key, $0.value) }
         return sums
     }
+    
+    func getTotalNecessaryExpenses() -> Double {
+        let trackedExpenses = getTrackedExpenses()
+        let necessaryExpenses = trackedExpenses.filter { $0.isNecessary }
+        let totalSum = necessaryExpenses.reduce(0.0) { $0 + $1.amount }
+        return totalSum
+    }
+    
+    func getTotalNonNecessaryExpenses() -> Double {
+        let trackedExpenses = getTrackedExpenses()
+        let nonNecessaryExpenses = trackedExpenses.filter { !$0.isNecessary }
+        let totalSum = nonNecessaryExpenses.reduce(0.0) { $0 + $1.amount }
+        return totalSum
+    }
 
 }

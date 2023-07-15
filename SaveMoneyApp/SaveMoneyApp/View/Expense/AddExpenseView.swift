@@ -10,10 +10,13 @@ import SwiftUI
 struct AddExpenseView: View {
     
     @EnvironmentObject var viewModel: ViewModel
+    
     @State private var name = ""
     @State private var date = Date.now
-    @State private var amount = 0.0
+    @State private var amount: Double?
+    @State private var amountString: String = ""
     @State private var selectedCategory: ExpenseCategory?
+    @State private var isNecessary = false
     @Environment(\.dismiss) var dismiss
     
     var body: some View {
@@ -24,7 +27,12 @@ struct AddExpenseView: View {
                 }
                 
                 Section(header: Text("Informations")) {
-                    TextField("Cost", value: $amount, formatter: NumberFormatter())
+                    TextField("Cost", text: $amountString)
+                                           .keyboardType(.decimalPad)
+                                           .onChange(of: amountString) { newValue in
+                                               amount = Double(newValue)
+                                           }
+                        .keyboardType(.decimalPad)
                     
                     DatePicker("Date", selection: $date, displayedComponents: .date)
                     
@@ -34,16 +42,19 @@ struct AddExpenseView: View {
                                 .tag(category as ExpenseCategory?)
                         }
                     }
+                    Toggle("Was it necessary expanse?", isOn: $isNecessary)
                 }
+                
             }
             .toolbar {
                 ToolbarItem {
                     Button("Add") {
-                        let newExpanse = Expense(id: UUID(), title: name, amount: amount, category: selectedCategory!, date: date)
+                        let newExpanse = Expense(id: UUID(), title: name, amount: amount!, category: selectedCategory!, date: date, isNecessary: isNecessary)
                         viewModel.expenses.append(newExpanse)
                         viewModel.saveExpenseToFile()
                         dismiss()
                     }
+                    .disabled(amount == nil || name.isEmpty)
                 }
                 
                 ToolbarItem(placement: .cancellationAction) {

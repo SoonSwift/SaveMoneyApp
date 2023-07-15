@@ -16,12 +16,16 @@ struct ExpenseView: View {
     var body: some View {
         NavigationView {
             List {
-                ForEach(viewModel.expenses) { expense in
-                    HStack {
-                        Text(expense.title)
-                            .bold()
-                        Spacer()
-                        Text("\(expense.amount.formatted())")
+                ForEach(viewModel.getExpenseSumByCategory(), id: \.0) { category, _ in
+                    Section(header: Text(category)) {
+                        ForEach(viewModel.expenses.filter { $0.category.name == category }) { expense in
+                            HStack {
+                                Text(expense.title)
+                                    .bold()
+                                Spacer()
+                                Text("\(expense.amount.formatted())")
+                            }
+                        }
                     }
                 }
                 .onDelete(perform: viewModel.removeExpenses)

@@ -8,9 +8,7 @@
 import XCTest
 @testable import SaveMoneyApp
 
-
 final class CategoryTests: XCTestCase {
-
 
     func testRemoveCategory() {
         // Given
@@ -137,7 +135,6 @@ final class CategoryTests: XCTestCase {
         let fileUrl = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(Constans.expenseFileName)
         let expenses = [Expense(id: UUID(), title: "hm", amount: 12.2, category: ExpenseCategory(name: "karma", id: UUID()), date: Date.now), Expense(id: UUID(), title: "food", amount: 12.2, category: ExpenseCategory(name: "karma", id: UUID()), date: Date.now)]
 
-        
         do {
             let encoder = JSONEncoder()
             let data = try encoder.encode(expenses)

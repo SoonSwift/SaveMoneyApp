@@ -229,6 +229,7 @@
 				60295D8A2A49DCAD001D7032 /* Sources */,
 				60295D8B2A49DCAD001D7032 /* Frameworks */,
 				60295D8C2A49DCAD001D7032 /* Resources */,
+				60362A252A61B2FE00119456 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -249,6 +250,7 @@
 				60295DB72A4A29F7001D7032 /* Sources */,
 				60295DB82A4A29F7001D7032 /* Frameworks */,
 				60295DB92A4A29F7001D7032 /* Resources */,
+				60362A242A61B2CC00119456 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -320,6 +322,43 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		60362A242A61B2CC00119456 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\n";
+		};
+		60362A252A61B2FE00119456 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [[ \"$(uname -m)\" == arm64 ]]; then\n    export PATH=\"/opt/homebrew/bin:$PATH\"\nfi\n\nif which swiftlint > /dev/null; then\n  swiftlint\nelse\n  echo \"warning: SwiftLint not installed, download from https://github.com/realm/SwiftLint\"\nfi\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		60295D8A2A49DCAD001D7032 /* Sources */ = {

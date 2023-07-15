@@ -13,7 +13,6 @@ enum Theme {
 
 struct MainView: View {
     
-    
     @State private var selection = 0
     @AppStorage("systemThemeVal") private var systemTheme:Int = SchameType.allCases.first!.rawValue
 
@@ -45,8 +44,8 @@ struct MainView: View {
                 ExpenseView()
                     .tabItem {
                         VStack {
-                            Image(systemName: "plus.forwardslash.minus")
-                            Text("Category")
+                            Image(systemName: "equal.square.fill")
+                            Text("Expense")
                         }
                     }
                     .tag(1)
@@ -54,8 +53,8 @@ struct MainView: View {
                 PlotView()
                     .tabItem {
                         VStack {
-                            Image(systemName: "plus.forwardslash.minus")
-                            Text("Category")
+                            Image(systemName: "chart.xyaxis.line")
+                            Text("Plots")
                         }
                     }
                     .tag(2)
