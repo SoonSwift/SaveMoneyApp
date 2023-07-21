@@ -7,10 +7,6 @@
 
 import SwiftUI
 
-enum Theme {
-    static let primary = Color("Primary")
-}
-
 struct MainView: View {
     
     @State private var selection = 0

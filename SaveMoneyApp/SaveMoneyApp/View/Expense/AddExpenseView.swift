@@ -22,17 +22,17 @@ struct AddExpenseView: View {
     var body: some View {
         NavigationView {
             List {
+                
                 Section(header: Text("Name of expense")) {
                     TextField("Name", text: $name)
                 }
                 
                 Section(header: Text("Informations")) {
                     TextField("Cost", text: $amountString)
-                                           .keyboardType(.decimalPad)
-                                           .onChange(of: amountString) { newValue in
-                                               amount = Double(newValue)
-                                           }
-                        .keyboardType(.decimalPad)
+                        .keyboardType(.numbersAndPunctuation)
+                        .onChange(of: amountString) { newValue in
+                            amount = Double(newValue)
+                        }
                     
                     DatePicker("Date", selection: $date, displayedComponents: .date)
                     
@@ -80,7 +80,7 @@ struct AddExpenseView_Previews: PreviewProvider {
         return NavigationView {
             AddExpenseView()
                 .environmentObject(viewModel)
-
+            
         }
         
     }

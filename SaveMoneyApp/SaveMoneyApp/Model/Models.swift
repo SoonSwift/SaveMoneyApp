@@ -28,3 +28,12 @@ enum ExpenseTrackingMode: String, CaseIterable, Identifiable {
     case all = "All"
     var id: String { self.rawValue }
 }
+
+enum Theme {
+    static let primary = Color("Primary")
+}
+
+enum SchameType: Int, Identifiable, CaseIterable {
+    var id: Self {self}
+    case system,light,dark
+}

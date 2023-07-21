@@ -9,120 +9,87 @@ import XCTest
 @testable import SaveMoneyApp
 
 final class CategoryTests: XCTestCase {
-
+    
     func testRemoveCategory() {
         // Given
         let viewModel = ViewModel()
+
         let category1 = ExpenseCategory(name: "Category 1", id: UUID())
-        let category2 = ExpenseCategory(name: "Category 2",id: UUID())
+        let category2 = ExpenseCategory(name: "Category 2", id: UUID())
+        
         viewModel.categories = [category1, category2]
         
+        let expense1 = Expense(id: UUID(), title: "expanse1", amount: 40.34, category: category1, date: Date(), isNecessary: true)
+        let expense2 = Expense(id: UUID(), title: "expanse2", amount: 21.32, category: category1, date: Date(), isNecessary: false)
+        let expense3 = Expense(id: UUID(), title: "expanse3", amount: 56.23, category: category2, date: Date(), isNecessary: false)
+        
+        viewModel.expenses = [expense1, expense2, expense3]
+        
+        XCTAssertEqual(viewModel.categories.count, 2)
+        XCTAssertEqual(viewModel.expenses.count, 3)
+        
         // When
-        viewModel.removeCategory(at: IndexSet(integer: 0))
+        viewModel.removeCategory(at: IndexSet([0]))
         
         // Then
-        XCTAssertEqual(viewModel.categories.count, 1)
-        XCTAssertFalse(viewModel.categories.contains(category1))
-        
-        // Verify that changes are saved to file
-        let fileManager = FileManager.default
-        let fileUrl = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(Constans.categoryFileName)
-    
-        XCTAssertTrue(fileManager.fileExists(atPath: fileUrl.path))
-        
-        if let data = try? Data(contentsOf: fileUrl) {
-            let decoder = JSONDecoder()
-            if let decodedCategories = try? decoder.decode([ExpenseCategory].self, from: data) {
-                XCTAssertEqual(decodedCategories.count, 1)
-                XCTAssertFalse(decodedCategories.contains(category1))
-            } else {
-                XCTFail("Failed to decode categories from file")
-            }
-        } else {
-            XCTFail("Failed to read data from file")
-        }
+        XCTAssertEqual(viewModel.categories.count, 1) // Category 1 should be removed
+        XCTAssertEqual(viewModel.expenses.count, 1) // expense1 and expense2 should be removed
+        XCTAssertEqual(viewModel.categories.first?.name, "Category 2")
     }
     
     func testCategorySaveToFile() {
         // Given
         let viewModel = ViewModel()
         viewModel.categories = [ExpenseCategory(name: "Category 1",id: UUID()), ExpenseCategory(name: "Category 2", id: UUID())]
-
+        
         // When
         viewModel.saveCategoryToFile()
         
         // Then
-        let fileManager = FileManager.default
-        let fileUrl = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(Constans.categoryFileName)
+        let fileUrl = FileHelper.fileURL(for: Constans.categoryFileName)
+        XCTAssertTrue(FileHelper.fileExists(at: fileUrl))
         
-        // Check if the file exists
-        XCTAssertTrue(fileManager.fileExists(atPath: fileUrl.path))
-        
-        // Read the file
-        if let data = try? Data(contentsOf: fileUrl) {
-            // Decode the file contents
-            let decoder = JSONDecoder()
-            if let decodedCategories = try? decoder.decode([ExpenseCategory].self, from: data) {
-                // Check if the decoded categories match the original categories
-                XCTAssertEqual(decodedCategories, viewModel.categories)
-            } else {
-                XCTFail("Failed to decode categories from file")
-            }
+        if let decodedCategories = FileHelper.loadData([ExpenseCategory].self, from: fileUrl) {
+            XCTAssertEqual(decodedCategories, viewModel.categories)
         } else {
-            XCTFail("Failed to read data from file")
+            XCTFail("Failed to decode categories from file")
         }
     }
-
+    
     func testLoadCategoryFromFile() {
         // Given
         let viewModel = ViewModel()
         
         // Create a test file with sample categories
-        let fileManager = FileManager.default
-        let fileUrl = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(Constans.categoryFileName)
         let categories = [ExpenseCategory(name: "Category 1", id: UUID()), ExpenseCategory(name: "Category 2", id: UUID())]
+        let fileUrl = FileHelper.fileURL(for: Constans.categoryFileName)
+        FileHelper.saveData(categories, to: fileUrl)
         
-        do {
-            let encoder = JSONEncoder()
-            let data = try encoder.encode(categories)
-            try data.write(to: fileUrl)
-        } catch {
-            XCTFail("Failed to create test file: \(error.localizedDescription)")
-        }
         // When
         viewModel.loadCategoryFromFile()
-            
+        
         // Then
         XCTAssertEqual(viewModel.categories.count, 2)
         XCTAssertTrue(viewModel.categories.contains(where: { $0.name == "Category 1" }))
         XCTAssertTrue(viewModel.categories.contains(where: { $0.name == "Category 2" }))
-       
     }
     
     func testExpenseSaveToFile() {
         // Given
         let viewModel = ViewModel()
         viewModel.expenses = [Expense(id: UUID(), title: "Burger", amount: 14.3, category: ExpenseCategory(name: "Food", id: UUID()), date: Date.now), Expense(id: UUID(), title: "Bed", amount: 1000.0, category: ExpenseCategory(name: "Personal", id: UUID()), date: Date.now)]
+        
         // When
         viewModel.saveExpenseToFile()
         
-        //Then
-        let fileManager = FileManager.default
-        let fileUrl = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(Constans.expenseFileName)
-        XCTAssert(fileManager.fileExists(atPath: fileUrl.path))
+        // Then
+        let fileUrl = FileHelper.fileURL(for: Constans.expenseFileName)
+        XCTAssertTrue(FileHelper.fileExists(at: fileUrl))
         
-        // Read the file
-        if let data = try? Data(contentsOf: fileUrl) {
-            // Decode the file contents
-            let decoder = JSONDecoder()
-            if let decodedCategories = try? decoder.decode([Expense].self, from: data) {
-                // Check if the decoded categories match the original categories
-                XCTAssertEqual(decodedCategories, viewModel.expenses)
-            } else {
-                XCTFail("Failed to decode categories from file")
-            }
+        if let decodedExpenses = FileHelper.loadData([Expense].self, from: fileUrl) {
+            XCTAssertEqual(decodedExpenses, viewModel.expenses)
         } else {
-            XCTFail("Failed to read data from file")
+            XCTFail("Failed to decode expenses from file")
         }
     }
     
@@ -130,32 +97,25 @@ final class CategoryTests: XCTestCase {
         // Given
         let viewModel = ViewModel()
         
-        // Create a test file with sample categories
-        let fileManager = FileManager.default
-        let fileUrl = fileManager.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent(Constans.expenseFileName)
-        let expenses = [Expense(id: UUID(), title: "hm", amount: 12.2, category: ExpenseCategory(name: "karma", id: UUID()), date: Date.now), Expense(id: UUID(), title: "food", amount: 12.2, category: ExpenseCategory(name: "karma", id: UUID()), date: Date.now)]
-
-        do {
-            let encoder = JSONEncoder()
-            let data = try encoder.encode(expenses)
-            try data.write(to: fileUrl)
-        } catch {
-            XCTFail("Failed to create test file: \(error.localizedDescription)")
-        }
+        // Create a test file with sample expenses
+        let expenses = [
+            Expense(id: UUID(), title: "hm", amount: 12.2, category: ExpenseCategory(name: "karma", id: UUID()), date: Date.now),
+            Expense(id: UUID(), title: "food", amount: 12.2, category: ExpenseCategory(name: "karma", id: UUID()), date: Date.now)
+        ]
+        let fileUrl = FileHelper.fileURL(for: Constans.expenseFileName)
+        FileHelper.saveData(expenses, to: fileUrl)
+        
         // When
         viewModel.loadExpenseFromFile()
-            
+        
         // Then
         XCTAssertEqual(viewModel.expenses.count, 2)
-        print(viewModel.expenses[0].title)
-        print(viewModel.expenses[1].title)
-        XCTAssert(viewModel.expenses[0].title == "hm")
-        XCTAssert(viewModel.expenses[1].title == "food")
-
+        XCTAssertEqual(viewModel.expenses[0].title, "hm")
+        XCTAssertEqual(viewModel.expenses[1].title, "food")
     }
     
     func testGetAllExpenseAmounts() {
-       // Given
+        // Given
         let viewModel = ViewModel()
         let expenses = [
             Expense(id: UUID(), title: "Expense 1", amount: 10.5, category: ExpenseCategory(name: "da", id: UUID()), date: Date()),
@@ -192,7 +152,7 @@ final class CategoryTests: XCTestCase {
         let viewModel = ViewModel()
         viewModel.trackingMode = .daily
         let currentDate = Date()
-
+        
         // Create a date component for 25 hours ago
         var dateComponents = DateComponents()
         dateComponents.hour = -25
@@ -207,9 +167,9 @@ final class CategoryTests: XCTestCase {
             viewModel.expenses = [expense1, expense2, expense3]
             print("Expense 1 Date: \(expense1.date)")
         } else {
-            print("Failed to calculate the date 25 hours ago")
+            XCTFail("Failed to calculate the date 25 hours ago")
         }
-      
+        
         // When
         let array = viewModel.getTrackedExpenses()
         
@@ -242,9 +202,9 @@ final class CategoryTests: XCTestCase {
         let sum = viewModel.getExpensesSumByDay()
         
         // Then
-        XCTAssert(sum[0] == 50.0)
-        // Sum shuld be always equal to 1 
+        // Sum shuld be always equal to 1
         XCTAssertEqual(sum.count, 1)
+        XCTAssert(sum[0] == 50.0)
     }
     
     func testGetTotalExpensesSum() {

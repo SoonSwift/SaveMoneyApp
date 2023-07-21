@@ -8,26 +8,9 @@
 import SwiftUI
 import StoreKit
 
-enum SchameType: Int, Identifiable, CaseIterable {
-    var id: Self {self}
-    case system,light,dark
-}
-
-extension SchameType {
-    var title: LocalizedStringKey {
-        switch self {
-        case .system:
-            return "System"
-        case .dark:
-            return "Dark"
-        case .light:
-            return "Light"
-        }
-    }
-}
-
 struct SettingsView: View {
-    @AppStorage("systemThemeVal") private var systemTheme:Int = SchameType.allCases.first!.rawValue
+    
+    @AppStorage("systemThemeVal") private var systemTheme: Int = SchameType.allCases.first!.rawValue
     @Environment(\.colorScheme) var colorScahme
     @Environment(\.openURL) var openURL
     @Environment(\.requestReview) var requestReview

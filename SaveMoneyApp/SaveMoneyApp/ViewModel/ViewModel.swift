@@ -28,8 +28,24 @@ class ViewModel: ObservableObject {
     }
     
     func removeCategory(at offsets: IndexSet) {
+        // Get the categories to be removed based on the provided offsets
+        let removedCategories = offsets.map { categories[$0] }
+
+        // Remove the selected categories from the main 'categories' array
         categories.remove(atOffsets: offsets)
+
+        // Loop through the removed categories to find all associated expenses
+        for removedCategory in removedCategories {
+            // Filter out all expenses that belong to the removed category
+            let expensesToRemove = expenses.filter { $0.category == removedCategory }
+
+            // Remove the expenses from the main 'expenses' array
+            expenses.removeAll { expensesToRemove.contains($0) }
+        }
+
+        // Save the changes to the data files
         saveCategoryToFile()
+        saveExpenseToFile()
     }
     
     func saveCategoryToFile() {

@@ -50,10 +50,10 @@ struct PlotView_Previews: PreviewProvider {
         let viewModel = ViewModel()
         viewModel.expenses = [Expense(id: UUID(), title: "hm", amount: 122.2, category: ExpenseCategory(name: "karma", id: UUID()), date: viewModel.addOrSubtractMonth(month: -1)), Expense(id: UUID(), title: "food", amount: 12.2, category: ExpenseCategory(name: "karma", id: UUID()), date: Date.now)]
         viewModel.categories = Constans.categegories
-        return NavigationView {
-            PlotView()
+       
+        return PlotView()
                 .environmentObject(viewModel)
-        }
+        
     }
  
 }

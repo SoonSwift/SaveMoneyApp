@@ -16,7 +16,6 @@ struct AddCategoryView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                Color.white.ignoresSafeArea()
                 VStack(alignment: .leading) {
                     Text("Add Category")
                         .font(.title2)
